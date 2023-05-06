@@ -1,6 +1,7 @@
 package com.scottwehby.clipshuffle
 
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,8 +24,10 @@ class MainActivity : ComponentActivity() {
         R.raw.he_aint_heavy_chorus_3
     )
 
+    private lateinit var mediaPlayer: MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mediaPlayer = MediaPlayer.create(this, clips.random())
         setContent {
             ClipShuffleTheme {
                 // A surface container using the 'background' color from the theme
@@ -32,8 +35,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("hello") {
-                        val mediaPlayer = MediaPlayer.create(this, clips.random())
+                    Greeting("Play clip") {
+                        mediaPlayer.reset()
+                        mediaPlayer.setDataSource(
+                            this,
+                            Uri.parse("android.resource://$packageName/${clips.random()}")
+                        )
+                        mediaPlayer.prepare()
                         mediaPlayer.start()
                     }
                 }
